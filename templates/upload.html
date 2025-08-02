@@ -122,21 +122,20 @@
       <a href="#gallery">Gallery</a>
     </div>
   </nav>
-
+  
+  <div class="form-section">
   <div class="content">
-    <h1>Upload Your File</h1>
-    <p>Use the form below to write a description and upload your file.</p>
-
-    <div class="form-section">
-      <form action="#" method="post" enctype="multipart/form-data">
-        <label for="description">Enter Description:</label>
-        <textarea id="description" name="description" rows="5" placeholder="Write something here..." required></textarea>
-
-        <label for="fileUpload">Select File to Upload:</label>
-        <input type="file" id="fileUpload" name="fileUpload" required>
-
-        <button type="submit">Submit</button>
-      </form>
+    <h1>Upload Your Image</h1>
+    
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="file" name="image" accept="image/*" required>
+      <label for="description">Enter Description:</label>
+      <textarea id="description" name="description" rows="5" placeholder="Write something here..." required></textarea>
+      <br>
+      <button type="submit">Submit</button>
+    </form>
+      
     </div>
   </div>
 
