@@ -1,7 +1,7 @@
 <img width="3188" height="1202" alt="frame (3)" src="https://github.com/user-attachments/assets/517ad8e9-ad22-457d-9538-a9e62d137cd7" />
 
 
-# [Project Name] 🎯
+# PathWave 🎯
 
 
 ## Basic Details
@@ -13,26 +13,21 @@
 - Member 3: shamil k - farook college, calicut
 
 ### Project Description
-[2-3 lines about what your project does]
+PathWave takes an image of a pothole and turns it into a custom piece of music. Because who said road damage can't sound beautiful?
 
 ### The Problem (that doesn't exist)
-[What ridiculous problem are you solving?]
+Potholes are everywhere - but no one has ever asked what they sound like. We have been looking at them all wrong. They're not ugly holes, they're hidden music waiting to be heard.
 
 ### The Solution (that nobody asked for)
-[How are you solving it? Keep it fun!]
+Snap a photo of a pothole and upload it. Our system analyzes the image and turns it into a beat. It is completely unnecessary, but you have never heard anything like it.
 
 ## Technical Details
 ### Technologies/Components Used
 For Software:
-- [Languages used]
-- [Frameworks used]
+- HTML, CSS, Python
+- Python Django
 - [Libraries used]
 - [Tools used]
-
-For Hardware:
-- [List main components]
-- [List specifications]
-- [List tools required]
 
 ### Implementation
 For Software:
