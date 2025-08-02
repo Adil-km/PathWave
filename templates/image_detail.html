@@ -3,51 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Image Detail</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
     <style>
-        body{
+        body {
             background-color: black;
+            font-family: sans-serif;
         }
-        .container{
+        .container {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
         }
-        .description{
+        .description {
             color: white;
+            margin-top: 15px;
+            text-align: center;
         }
-        .container img{
+        .container img {
             max-width: 50%;
             border: 2px solid white;
+            margin-top: 20px;
         }
-        .backBtn{
+        .backBtn {
             text-decoration: none;
             color: black;
             background-color: yellowgreen;
             padding: 20px;
+            margin-top: 30px;
+            font-weight: bold;
         }
-    
+        #map {
+            height: 300px;
+            width: 80%;
+            max-width: 600px;
+            margin-top: 30px;
+            border-radius: 10px;
+            border: 2px solid white;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
         <img src="{{ item.original_image.url }}" alt="Image">
+
         <div class="description">
             <p>{{ item.description }}</p>
         </div>
 
         {% if item.generated_audio %}
             <audio controls>
-            <source src="{{ item.generated_audio.url }}" type="audio/wav">
+                <source src="{{ item.generated_audio.url }}" type="audio/wav">
+                Your browser does not support the audio element.
             </audio>
         {% endif %}
 
-        <br><br>
-        <a href="{% url 'gallery' %}" class="backBtn">← Back to Gallery</a>
+        {% if item.latitude and item.longitude %}
+            <div id="map"></div>
+        {% endif %}
 
+        <a href="{% url 'gallery' %}" class="backBtn">← Back to Gallery</a>
     </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    {% if item.latitude and item.longitude %}
+    <script>
+        const map = L.map('map').setView([{{ item.latitude }}, {{ item.longitude }}], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        L.marker([{{ item.latitude }}, {{ item.longitude }}])
+            .addTo(map)
+            .bindPopup("📍 Image Location")
+            .openPopup();
+    </script>
+    {% endif %}
+
 </body>
 </html>

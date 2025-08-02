@@ -2,14 +2,13 @@ import os
 import uuid
 import cv2
 import numpy as np
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.conf import settings
 from django.urls import reverse
 from .models import Upload
 from .convertToAudio import image_to_music
-from django.shortcuts import get_object_or_404
 
 
 def home(request):
@@ -19,6 +18,7 @@ def home(request):
 def imageDetail(request, id):
     obj = get_object_or_404(Upload, id=id)
     return render(request, 'image_detail.html', {'item': obj})
+
 
 def custom_stroke_extraction_save(img_path, output_path,
                                    stroke_thickness=2,
@@ -82,35 +82,43 @@ def UploadImage(request):
         if os.path.exists(processed_abs_path):
             os.remove(processed_abs_path)
 
-        # Save both paths in DB
+        # Get location if available
+        lat = request.POST.get("latitude")
+        lon = request.POST.get("longitude")
+
+        # Save in DB
         obj = Upload.objects.create(
             original_image=image_rel_path,
-            generated_audio=audio_rel_path
+            generated_audio=audio_rel_path,
+            latitude=lat if lat else None,
+            longitude=lon if lon else None
         )
 
-        # Redirect to avoid resubmission on refresh
         return redirect(reverse("upload") + f"?id={obj.id}")
 
-    # Handle GET (render page and show result if redirected)
+    # GET: show upload form + preview latest
     context = {}
-
     image_id = request.GET.get("id")
+
     if image_id:
         try:
             obj = Upload.objects.get(id=image_id)
             context["success"] = True
             context["image_path"] = obj.original_image.url
             context["audio_path"] = obj.generated_audio.url
+            context["latitude"] = obj.latitude
+            context["longitude"] = obj.longitude
         except Upload.DoesNotExist:
             pass
 
     context["items"] = Upload.objects.order_by("-uploaded_at")[:10]
     return render(request, "upload.html", context)
 
+
 def viewGallery(request):
     context = {}
-
     image_id = request.GET.get("id")
+
     if image_id:
         try:
             obj = Upload.objects.get(id=image_id)
@@ -119,5 +127,6 @@ def viewGallery(request):
         except Upload.DoesNotExist:
             pass
 
+    # All uploads with location (optional for map)
     context["items"] = Upload.objects.all()
     return render(request, 'gallery.html', context)

@@ -3,61 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Modern Nav Bar</title>
+  <title>Upload with Location</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
   <style>
     body {
       background-color: #1a1a1a;
       color: white;
-    }
-
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 40px;
-      background-color: #111;
-    }
-
-    .logo {
-      font-size: 24px;
-      font-weight: bold;
-      color: white;
-      letter-spacing: 2px;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 30px;
-    }
-
-    .nav-links a {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      position: relative;
-      transition: color 0.3s ease;
-    }
-
-    .nav-links a:hover,
-    .nav-links a.active {
-      color: #d6ff00;
-      text-shadow: 0 0 10px #d6ff00;
-    }
-
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      width: 0;
-      height: 3px;
-      background-color: #d6ff00;
-      bottom: -5px;
-      left: 0;
-      transition: width 0.3s ease;
-    }
-
-    .nav-links a:hover::after,
-    .nav-links a.active::after {
-      width: 100%;
     }
 
     .content {
@@ -69,12 +23,6 @@
     .content h1 {
       color: #d6ff00;
       font-size: 28px;
-    }
-
-    .content p {
-      font-size: 18px;
-      line-height: 1.6;
-      margin-bottom: 30px;
     }
 
     .form-section label {
@@ -109,25 +57,71 @@
     .form-section button:hover {
       background-color: #b3d400;
     }
+
+    #map {
+      height: 300px;
+      margin-top: 20px;
+      border: 2px solid #555;
+      border-radius: 10px;
+    }
   </style>
 </head>
 <body>
   {% include 'navBar.html' %}
+
   <div class="form-section">
-  <div class="content">
-    <h1>Upload Your Image</h1>
-    
-    <form method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      <input type="file" name="image" accept="image/*" required>
-      <label for="description">Enter Description:</label>
-      <textarea id="description" name="description" rows="5" placeholder="Write something here..." required></textarea>
-      <br>
-      <button type="submit">Submit</button>
-    </form>
-      
+    <div class="content">
+      <h1>Upload Your Image</h1>
+
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="image" accept="image/*" required>
+
+        <label for="description">Enter Description:</label>
+        <textarea id="description" name="description" rows="5" placeholder="Write something here..." required></textarea>
+
+        <!-- Hidden fields for lat/lng -->
+        <input type="hidden" id="id_latitude" name="latitude">
+        <input type="hidden" id="id_longitude" name="longitude">
+
+        <div id="map"></div>
+
+        <br>
+        <button type="submit">Submit</button>
+      </form>
     </div>
   </div>
 
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <script>
+    const latInput = document.getElementById('id_latitude');
+    const lonInput = document.getElementById('id_longitude');
+
+    const map = L.map('map').setView([20, 80], 4); // default to India
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    let marker;
+
+    map.on('click', function (e) {
+      const { lat, lng } = e.latlng;
+      if (marker) marker.setLatLng([lat, lng]);
+      else marker = L.marker([lat, lng]).addTo(map);
+      latInput.value = lat;
+      lonInput.value = lng;
+    });
+
+    // Optional: Get user's current location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(pos => {
+        const { latitude, longitude } = pos.coords;
+        map.setView([latitude, longitude], 13);
+      });
+    }
+  </script>
 </body>
 </html>
