@@ -32,7 +32,7 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 if os.getenv('RENDER')=='True':
-    ALLOWED_HOSTS += ['temp1-yw45.onrender.com']
+    ALLOWED_HOSTS += ['pathwave.onrender.com']
 
 # Application definition
 
