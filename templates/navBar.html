@@ -10,12 +10,30 @@
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
     }
 
-    .logo {
-      font-size: 26px;
-      font-weight: bold;
-      color: #d6ff00;
-      letter-spacing: 2px;
-    }
+.logo {
+  font-size: 26px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  animation: logoAnimation 1s ease-in-out infinite;
+}
+.logo a{
+  color: #ffffff;
+  text-decoration: none;
+}
+.logo a:hover{
+  color: greenyellow;
+  cursor: pointer;
+  text-shadow: 0 0 10px yellowgreen;
+}
+
+@keyframes logoAnimation {
+  0%, 100% {
+    letter-spacing: 5px;
+  }
+  50% {
+    letter-spacing: 2px;
+  }
+}
 
     .nav-links {
       display: flex;
@@ -47,7 +65,7 @@
   </style>
 
    <nav class="navbar">
-    <div class="logo">COCONUT</div>
+    <div class="logo"> <a href="{% url 'home' %}">COCONUT</a></div>
     <div class="nav-links">
       <a href="{% url 'home' %}">Home</a>
       <a href="{% url 'upload' %}">Upload</a>
