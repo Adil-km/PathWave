@@ -1,127 +1,132 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Upload with Location</title>
+{% extends 'base.html' %}
 
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+{% block head%}
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
-  <style>
-    body {
-      background-color: #1a1a1a;
-      color: white;
+<style>
+  .content {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 20px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+  }
+  
+  .content h1 {
+    color: #d6ff00;
+    font-size: 2.2em;
+    text-align: center;
+    padding-bottom: 10px;
+  }
+  
+  .form-section label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  
+  .form-section textarea,
+  .form-section input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    background-color: #333;
+    color: white;
+    border: 1px solid #555;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  .form-section button {
+    padding: 10px 20px;
+    width: 100%;
+    background-color: #d6ff00;
+    color: #111;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1.3em;
     }
 
-    .content {
-      max-width: 700px;
-      margin: 40px auto;
-      padding: 20px;
+    .form-section button:focus{
+      outline-color: #111;
     }
-
-    .content h1 {
-      color: #d6ff00;
-      font-size: 28px;
-    }
-
-    .form-section label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 500;
-    }
-
-    .form-section textarea,
-    .form-section input[type="file"] {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 20px;
-      background-color: #333;
-      color: white;
-      border: 1px solid #555;
-      border-radius: 5px;
-      font-size: 16px;
-    }
-
-    .form-section button {
-      padding: 10px 20px;
-      background-color: #d6ff00;
-      color: #111;
-      font-weight: bold;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
+    
     .form-section button:hover {
       background-color: #b3d400;
     }
-
+    
     #map {
       height: 300px;
       margin-top: 20px;
       border: 2px solid #555;
       border-radius: 10px;
     }
-  </style>
-</head>
-<body>
-  {% include 'navBar.html' %}
+    </style>
 
-  <div class="form-section">
-    <div class="content">
-      <h1>Upload Your Image</h1>
 
-      <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="file" name="image" accept="image/*" required>
+{% endblock head%}
 
-        <label for="description">Enter Description:</label>
-        <textarea id="description" name="description" rows="5" placeholder="Write something here..." required></textarea>
-
-        <!-- Hidden fields for lat/lng -->
-        <input type="hidden" id="id_latitude" name="latitude">
-        <input type="hidden" id="id_longitude" name="longitude">
-
-        <div id="map"></div>
-
-        <br>
-        <button type="submit">Submit</button>
-      </form>
-    </div>
+{% block body %}
+<div class="form-section">
+  <div class="content">
+    <h1>Upload Your Image</h1>
+    
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="file" name="image" accept="image/*" required>
+      
+      <label for="description">Enter Description:</label>
+      <textarea id="description" name="description" rows="5" placeholder="Write something here..." required></textarea>
+      
+      <!-- Hidden fields for lat/lng -->
+      <input type="hidden" id="id_latitude" name="latitude">
+      <input type="hidden" id="id_longitude" name="longitude">
+      <label for="mao">Mark the location:</label>
+      <div id="map"></div>
+      
+      <br>
+      <button type="submit">CONVERT</button>
+    </form>
   </div>
+</div>
 
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-  <script>
-    const latInput = document.getElementById('id_latitude');
-    const lonInput = document.getElementById('id_longitude');
-
-    const map = L.map('map').setView([20, 80], 4); // default to India
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
-    let marker;
-
-    map.on('click', function (e) {
-      const { lat, lng } = e.latlng;
-      if (marker) marker.setLatLng([lat, lng]);
-      else marker = L.marker([lat, lng]).addTo(map);
-      latInput.value = lat;
-      lonInput.value = lng;
+<script>
+  const latInput = document.getElementById('id_latitude');
+  const lonInput = document.getElementById('id_longitude');
+  
+  const map = L.map('map').setView([20, 80], 4); // default to India
+  
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
+  
+  let marker;
+  
+  map.on('click', function (e) {
+    const { lat, lng } = e.latlng;
+    if (marker) marker.setLatLng([lat, lng]);
+    else marker = L.marker([lat, lng]).addTo(map);
+    latInput.value = lat;
+    lonInput.value = lng;
+  });
+  
+  // Optional: Get user's current location
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(pos => {
+      const { latitude, longitude } = pos.coords;
+      map.setView([latitude, longitude], 13);
     });
-
-    // Optional: Get user's current location
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(pos => {
-        const { latitude, longitude } = pos.coords;
-        map.setView([latitude, longitude], 13);
-      });
-    }
+  }
   </script>
-</body>
-</html>
+  
+{% endblock body %}

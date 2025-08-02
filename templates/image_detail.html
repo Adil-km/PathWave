@@ -1,113 +1,107 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Detail</title>
+{% extends 'base.html' %}
 
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+{% block head%}
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
-    <style>
-        body {
-            background-color: black;
-        }
-        .container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .description {
-            color: white;
-            margin-top: 15px;
-            text-align: center;
-            width: 90%;
-            font-size: 1em;
-            padding-inline: 20px;
-            background-color: rgb(29, 29, 29);
-            margin-block:20px ;
-        }
-        .container img {
-            max-width: 50%;
-            border: 2px solid white;
-            margin-top: 20px;
-        }
-
-        .container span{
-            color: white;
-            font-size: 2em;
-            padding-right: 10px;
-        }
-        .backBtn {
-            text-decoration: none;
-            color: black;
-            background-color: yellowgreen;
-            padding: 20px;
-            margin-top: 30px;
-            font-weight: bold;
-        }
-        .sound{
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            padding: 10px;
-        }
-
-        #map {
-            height: 300px;
-            width: 80%;
-            max-width: 600px;
-            margin-top: 30px;
-            border-radius: 10px;
-            border: 2px solid white;
-        }
+<style>
+    .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .description {
+        color: white;
+        margin-top: 15px;
+        text-align: center;
+        padding-inline: 20px;
+        font-size: 1em;
+        padding-inline: 20px;
+        background-color: rgb(55, 55, 55);
+        margin-block:20px ;
+    }
+    .container img {
+        max-width: 50%;
+        border: 2px solid white;
+        margin-top: 20px;
+    }
+    
+    .container span{
+        color: white;
+        font-size: 2em;
+        padding-right: 10px;
+    }
+    .backBtn {
+        text-decoration: none;
+        color: black;
+        background-color: greenyellow;
+        padding: 20px;
+        margin-top: 30px;
+        font-weight: bold;
+        border-radius: 10px;
+        font-weight: bold;
+    }
+    .sound{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        padding: 10px;
+    }
+    
+    #map {
+        height: 300px;
+        width: 80%;
+        max-width: 600px;
+        margin-top: 30px;
+        border-radius: 10px;
+        border: 2px solid white;
+    }
     </style>
-</head>
-<body>
-    {% include 'navBar.html' %}
-
+    {% endblock head%}
+    
+    {% block body %}
     <div class="container">
         <img src="{{ item.original_image.url }}" alt="Image">
-
+        
         <div class="description">
             <p>{{ item.description }}</p>
         </div>
-
+        
         {% if item.generated_audio %}
         <div class="sound">
             <span>Hear the sound </span>
-                <audio controls>
-                    <source src="{{ item.generated_audio.url }}" type="audio/wav">
-                    Your browser does not support the audio element.
-                </audio>
+            <audio controls>
+                <source src="{{ item.generated_audio.url }}" type="audio/wav">
+                Your browser does not support the audio element.
+            </audio>
         </div>
         {% endif %}
-
+        
         {% if item.latitude and item.longitude %}
-            <div id="map"></div>
+        <div id="map"></div>
         {% endif %}
-
+        
         <a href="{% url 'gallery' %}" class="backBtn">← Back to Gallery</a>
     </div>
-
+    
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
+    
     {% if item.latitude and item.longitude %}
     <script>
         const map = L.map('map').setView([{{ item.latitude }}, {{ item.longitude }}], 13);
-
+        
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
-
+        
         L.marker([{{ item.latitude }}, {{ item.longitude }}])
-            .addTo(map)
-            .bindPopup("📍 Image Location")
-            .openPopup();
-    </script>
+        .addTo(map)
+        .bindPopup("📍 Image Location")
+        .openPopup();
+        </script>
     {% endif %}
+    
+{% endblock body %}
 
-</body>
-</html>

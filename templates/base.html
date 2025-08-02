@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PathWay - Listen to the art in the potholes</title>
+
+<link rel="icon" type="image/png" href="{% static 'icons/favicon-96x96.png' %}" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="{% static 'icons/favicon.svg' %}" />
+<link rel="shortcut icon" href="{% static 'icons/favicon.ico' %}" />
+<link rel="apple-touch-icon" sizes="180x180" href="{% static 'icons/apple-touch-icon.png' %}" />
+<meta name="apple-mobile-web-app-title" content="MyWebSite" />
+<link rel="manifest" href="{% static 'icons/site.webmanifest' %}" />
+<style>
+    body {
+        background-color: #1a1a1a;
+        font-family: 'Courier New', Courier, monospace;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        letter-spacing: 1.5px;
+    }
+    *:focus{
+     outline-color: greenyellow;
+    }
+</style>
+{% block head%}
+{% endblock head%}
+</head>
+<body>
+    {% include 'navBar.html' %}
+    
+    {% block body %}
+    {% endblock body %}
+    
+    {% include 'footer.html' %}
+    
+</body>
+</html>
