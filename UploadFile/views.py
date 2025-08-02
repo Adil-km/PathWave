@@ -82,16 +82,18 @@ def UploadImage(request):
         if os.path.exists(processed_abs_path):
             os.remove(processed_abs_path)
 
-        # Get location if available
+        # Get location and description
         lat = request.POST.get("latitude")
         lon = request.POST.get("longitude")
+        desc = request.POST.get("description")
 
         # Save in DB
         obj = Upload.objects.create(
             original_image=image_rel_path,
             generated_audio=audio_rel_path,
             latitude=lat if lat else None,
-            longitude=lon if lon else None
+            longitude=lon if lon else None,
+            description=desc if desc else ""
         )
 
         return redirect(reverse("upload") + f"?id={obj.id}")
@@ -108,6 +110,7 @@ def UploadImage(request):
             context["audio_path"] = obj.generated_audio.url
             context["latitude"] = obj.latitude
             context["longitude"] = obj.longitude
+            context["description"] = obj.description
         except Upload.DoesNotExist:
             pass
 
@@ -122,11 +125,10 @@ def viewGallery(request):
     if image_id:
         try:
             obj = Upload.objects.get(id=image_id)
-            context["success"] = True
-            context["image_path"] = obj.original_image.url
+            context["item"] = obj
         except Upload.DoesNotExist:
             pass
+    else:
+        context["items"] = Upload.objects.all()
 
-    # All uploads with location (optional for map)
-    context["items"] = Upload.objects.all()
     return render(request, 'gallery.html', context)

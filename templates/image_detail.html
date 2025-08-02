@@ -23,11 +23,22 @@
             color: white;
             margin-top: 15px;
             text-align: center;
+            width: 90%;
+            font-size: 1em;
+            padding-inline: 20px;
+            background-color: rgb(29, 29, 29);
+            margin-block:20px ;
         }
         .container img {
             max-width: 50%;
             border: 2px solid white;
             margin-top: 20px;
+        }
+
+        .container span{
+            color: white;
+            font-size: 2em;
+            padding-right: 10px;
         }
         .backBtn {
             text-decoration: none;
@@ -37,6 +48,13 @@
             margin-top: 30px;
             font-weight: bold;
         }
+        .sound{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            padding: 10px;
+        }
+
         #map {
             height: 300px;
             width: 80%;
@@ -58,10 +76,13 @@
         </div>
 
         {% if item.generated_audio %}
-            <audio controls>
-                <source src="{{ item.generated_audio.url }}" type="audio/wav">
-                Your browser does not support the audio element.
-            </audio>
+        <div class="sound">
+            <span>Hear the sound </span>
+                <audio controls>
+                    <source src="{{ item.generated_audio.url }}" type="audio/wav">
+                    Your browser does not support the audio element.
+                </audio>
+        </div>
         {% endif %}
 
         {% if item.latitude and item.longitude %}
