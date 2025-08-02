@@ -26,29 +26,24 @@ Snap a photo of a pothole and upload it. Our system analyzes the image and turns
 For Software:
 - HTML, CSS, Python
 - Python Django
-- [Libraries used]
-- [Tools used]
-
-### Implementation
-For Software:
-# Installation
-[commands]
-
-# Run
-[commands]
+- leaflet.js
 
 ### Project Documentation
 For Software:
 
 # Screenshots (Add at least 3)
-![Screenshot1](Add screenshot 1 here with proper name)
+![Screenshot1](<img width="1200" height="746" alt="image" src="https://github.com/user-attachments/assets/5b1ec485-a95a-4383-b13c-750cf17c01fb" />)
+*Landing page*
+
+
+![Screenshot2](<img width="1189" height="759" alt="image" src="https://github.com/user-attachments/assets/c41ea267-ba5b-44d9-bcd4-022a1d3c7fbe" />)
 *Add caption explaining what this shows*
 
-![Screenshot2](Add screenshot 2 here with proper name)
-*Add caption explaining what this shows*
+![Screenshot3](<img width="1188" height="767" alt="image" src="https://github.com/user-attachments/assets/43c99b89-caea-455e-9e9a-50155c4fd7ff" />)
+*Page to upload image*
 
-![Screenshot3](Add screenshot 3 here with proper name)
-*Add caption explaining what this shows*
+![Screenshot3](<img width="1189" height="750" alt="image" src="https://github.com/user-attachments/assets/9eef0abe-4b73-4690-bff1-a39223b5fdb7" />)
+*View uploaded images*
 
 # Diagrams
 ![Workflow](Add your workflow/architecture diagram here)
