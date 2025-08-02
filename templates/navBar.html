@@ -1,0 +1,65 @@
+<style>
+
+    /* Navigation Bar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 50px;
+      background-color: #111;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: bold;
+      color: #d6ff00;
+      letter-spacing: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: 500;
+      position: relative;
+      transition: 0.3s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: #d6ff00;
+      text-shadow: 0 0 8px #d6ff00;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: #d6ff00;
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      width: 100%;
+    }
+
+  </style>
+
+   <nav class="navbar">
+    <div class="logo">WNE</div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="{% url 'upload' %}">Upload</a>
+      <a href="{% url 'gallery' %}" class="active">Gallery</a>
+    </div>
+  </nav>

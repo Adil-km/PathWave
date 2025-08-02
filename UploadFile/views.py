@@ -8,6 +8,7 @@ from django.core.files.storage import default_storage
 from django.conf import settings
 from django.urls import reverse
 from .models import Upload
+from .convertToAudio import image_to_music
 
 
 def custom_stroke_extraction_save(img_path, output_path,
@@ -59,6 +60,14 @@ def UploadImage(request):
         processed_abs_path = default_storage.path(processed_rel_path)
         custom_stroke_extraction_save(image_abs_path, processed_abs_path)
 
+        # Output audio path
+        audio_name = f"{file_id}.wav"
+        audio_rel_path = os.path.join("audio", audio_name)
+        audio_abs_path = os.path.join(settings.MEDIA_ROOT, audio_rel_path)
+        os.makedirs(os.path.dirname(audio_abs_path), exist_ok=True)
+
+        # Generate music from processed image
+        image_to_music(processed_abs_path, output_path=audio_abs_path)
 
         # Cleanup temporary file
         if os.path.exists(processed_abs_path):
@@ -66,11 +75,12 @@ def UploadImage(request):
 
         # Save both paths in DB
         obj = Upload.objects.create(
-            image=image_rel_path,
+            original_image=image_rel_path,
+            generated_audio=audio_rel_path
         )
 
         # Redirect to avoid resubmission on refresh
-        return redirect(reverse("UploadImage") + f"?id={obj.id}")
+        return redirect(reverse("upload") + f"?id={obj.id}")
 
     # Handle GET (render page and show result if redirected)
     context = {}
@@ -80,9 +90,25 @@ def UploadImage(request):
         try:
             obj = Upload.objects.get(id=image_id)
             context["success"] = True
-            context["image_path"] = obj.image.url
+            context["image_path"] = obj.original_image.url
+            context["audio_path"] = obj.generated_audio.url
+        except Upload.DoesNotExist:
+            pass
+
+    context["items"] = Upload.objects.order_by("-uploaded_at")[:10]
+    return render(request, "upload.html", context)
+
+def viewGallery(request):
+    context = {}
+
+    image_id = request.GET.get("id")
+    if image_id:
+        try:
+            obj = Upload.objects.get(id=image_id)
+            context["success"] = True
+            context["image_path"] = obj.original_image.url
         except Upload.DoesNotExist:
             pass
 
     context["items"] = Upload.objects.all()
-    return render(request, "upload.html", context)
+    return render(request, 'gallery.html', context)

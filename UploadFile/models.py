@@ -1,9 +1,10 @@
 from django.db import models
 
-# Create your models here.
 class Upload(models.Model):
-    discription = models.TextField(max_length=100)
-    image = models.ImageField(upload_to="images/")
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    original_image = models.ImageField(upload_to="images/")
+    generated_audio = models.FileField(upload_to="audio/")
+
 
     def __str__(self):
-        return f"{self.image.name}"
+        return f"{self.original_image.name} -> {self.generated_audio.name}"
