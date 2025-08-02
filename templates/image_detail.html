@@ -48,6 +48,7 @@
     </style>
 </head>
 <body>
+    {% include 'navBar.html' %}
 
     <div class="container">
         <img src="{{ item.original_image.url }}" alt="Image">
@@ -76,6 +77,7 @@
     {% if item.latitude and item.longitude %}
     <script>
         const map = L.map('map').setView([{{ item.latitude }}, {{ item.longitude }}], 13);
+
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
