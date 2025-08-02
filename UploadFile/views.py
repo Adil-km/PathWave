@@ -9,7 +9,16 @@ from django.conf import settings
 from django.urls import reverse
 from .models import Upload
 from .convertToAudio import image_to_music
+from django.shortcuts import get_object_or_404
 
+
+def home(request):
+    return render(request, 'home.html')
+
+
+def imageDetail(request, id):
+    obj = get_object_or_404(Upload, id=id)
+    return render(request, 'image_detail.html', {'item': obj})
 
 def custom_stroke_extraction_save(img_path, output_path,
                                    stroke_thickness=2,

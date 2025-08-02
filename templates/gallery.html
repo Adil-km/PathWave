@@ -6,62 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
       background-color: #1a1a1a;
       color: white;
     }
 
-    /* Navigation Bar */
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 50px;
-      background-color: #111;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    }
-
-    .logo {
-      font-size: 28px;
-      font-weight: bold;
-      color: #d6ff00;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 30px;
-    }
-
-    .nav-links a {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      position: relative;
-    }
-
-    .nav-links a:hover,
-    .nav-links a.active {
-      color: #d6ff00;
-      text-shadow: 0 0 8px #d6ff00;
-    }
-
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: -5px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background-color: #d6ff00;
-      transition: width 0.3s ease;
-    }
-
-    .nav-links a:hover::after,
-    .nav-links a.active::after {
-      width: 100%;
-    }
-
+  
     /* Gallery Layout */
     .gallery-container {
       padding: 40px 60px;
@@ -88,8 +37,9 @@
     }
 
     .gallery img {
-      width: 100%;
-      display: block;
+      max-width: 100%;
+      min-height: 100%;
+      background-size: cover;
     }
 
     .desc {
@@ -121,12 +71,13 @@
 
   {% include 'navBar.html' %}
       
-      <div class="gallery-container">
+  <div class="gallery-container">
+
     <h1 style="text-align:center; color: #d6ff00; margin-bottom: 30px;">Our Gallery</h1>
     <div class="gallery-grid">
       {% for item in items %}
         <div class="gallery">
-          <a href="?id={{ item.id }}">
+          <a href="{% url 'image_detail' item.id %}">
             <img src="{{ item.original_image.url }}" alt="Image {{ item.id }}">
           </a>
         </div>
@@ -134,10 +85,7 @@
         <p style="color:white;">No images uploaded yet.</p>
       {% endfor %}
     </div>
-  </div>
-
-    </div>
-
+    
   </div>
 
 </body>

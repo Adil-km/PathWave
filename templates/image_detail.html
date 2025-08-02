@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        body{
+            background-color: black;
+        }
+        .container{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .description{
+            color: white;
+        }
+        .container img{
+            max-width: 50%;
+            border: 2px solid white;
+        }
+        .backBtn{
+            text-decoration: none;
+            color: black;
+            background-color: yellowgreen;
+            padding: 20px;
+        }
+    
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <img src="{{ item.original_image.url }}" alt="Image">
+        <div class="description">
+            <p>{{ item.description }}</p>
+        </div>
+
+        {% if item.generated_audio %}
+            <audio controls>
+            <source src="{{ item.generated_audio.url }}" type="audio/wav">
+            </audio>
+        {% endif %}
+
+        <br><br>
+        <a href="{% url 'gallery' %}" class="backBtn">← Back to Gallery</a>
+
+    </div>
+</body>
+</html>

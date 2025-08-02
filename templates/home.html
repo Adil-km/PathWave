@@ -1,75 +1,43 @@
-.navbar {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+<style>
+  body{
+    background-color: black;
+  }
+
+.container{
   display: flex;
-  justify-content: space-between;
+  min-height: 100vh;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  padding: 25px 60px;
-  background: linear-gradient(90deg, #111, #222);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
 
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 15px;
 }
-
-.logo-img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-  box-shadow: 0 0 15px #d6ff00;
-  transition: transform 0.3s ease;
-}
-
-.logo-img:hover {
-  transform: rotate(5deg) scale(1.1);
-}
-
-.logo-text {
-  font-size: 28px;
-  font-weight: 700;
-  color: #d6ff00;
-  letter-spacing: 2px;
-  text-shadow: 0 0 10px #d6ff00;
-}
-
-.nav-links {
-  display: flex;
-  gap: 40px;
-}
-
-.nav-links a {
-  font-size: 20px;
+.container h1{
   color: white;
+}
+.container a{
   text-decoration: none;
-  font-weight: 600;
-  position: relative;
-  padding: 8px 0;
-  transition: all 0.3s ease;
+  padding: 15px 35px;
+  background-color: greenyellow;
+  color: black;
+  border-radius: 10px;
 }
 
-.nav-links a:hover,
-.nav-links a.active {
-  color: #d6ff00;
-  text-shadow: 0 0 10px #d6ff00;
-}
+</style>
 
-.nav-links a::after {
-  content: '';
-  position: absolute;
-  width: 0%;
-  height: 3px;
-  background-color: #d6ff00;
-  bottom: -5px;
-  left: 0;
-  transition: width 0.3s ease;
-}
+</head>
+<body>
+  {% include 'navBar.html' %}
 
-.nav-links a:hover::after,
-.nav-links a.active::after {
-  width: 100%;
-}
+  <div class="container">
+    
+    <h1>Got a pothole? Let it sing its soul!</h1>
+    <a href="{% url 'upload' %}">Upload</a>
+  </div>
+</body>
+</html>

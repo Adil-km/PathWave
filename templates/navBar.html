@@ -58,8 +58,9 @@
    <nav class="navbar">
     <div class="logo">WNE</div>
     <div class="nav-links">
-      <a href="index.html">Home</a>
+      <a href="{% url 'home' %}">Home</a>
       <a href="{% url 'upload' %}">Upload</a>
       <a href="{% url 'gallery' %}" class="active">Gallery</a>
     </div>
   </nav>
+
