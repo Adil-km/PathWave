@@ -62,10 +62,16 @@
       width: 100%;
     }
 
+    @media only screen and (max-width: 600px) {
+  .navbar {
+    background-color: lightblue;
+  }
+}
+
   </style>
 
    <nav class="navbar">
-    <div class="logo"> <a href="{% url 'home' %}">COCONUT</a></div>
+    <div class="logo"> <a href="{% url 'home' %}">TEAM COCONUT</a></div>
     <div class="nav-links">
       <a href="{% url 'home' %}">Home</a>
       <a href="{% url 'upload' %}">Upload</a>
