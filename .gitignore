@@ -1,9 +1,13 @@
-# Python
+# =======================================
+# Python bytecode and cache
+# =======================================
 __pycache__/
 *.py[cod]
 *$py.class
 
+# =======================================
 # Django
+# =======================================
 *.log
 *.pot
 *.pyc
@@ -13,39 +17,46 @@ __pycache__/
 *.sqlite
 db.sqlite3
 
-# Environment variables
-.env
-.env.*
-
-# Django migrations
+# Ignore Django migrations except __init__.py
 */migrations/*.py
 */migrations/*.pyc
 
-# Media and static files
-/media
-/staticfiles
-/static
+# =======================================
+# Environment
+# =======================================
+.env
+.env.*
 
-# VSCode
+# =======================================
+# Static and Media
+# =======================================
+# Allow custom static assets (e.g., favicon, CSS, JS)
+!static/
+# Ignore collected static files
+staticfiles/
+
+# Ignore media uploads (optional – keep if not storing user uploads in Git)
+media/
+
+# =======================================
+# IDEs and editors
+# =======================================
 .vscode/
-
-# macOS
+.idea/
 .DS_Store
 
-# PyCharm
-.idea/
-
-# pip
-pip-log.txt
-
+# =======================================
 # Virtual environments
+# =======================================
 venv/
 env/
 ENV/
 .venv/
 .virtualenv/
 
-# Coverage reports
+# =======================================
+# Testing and coverage
+# =======================================
 htmlcov/
 .tox/
 .nox/
@@ -56,14 +67,12 @@ nosetests.xml
 coverage.xml
 *.cover
 *.py,cover
-
-# MyPy
 .mypy_cache/
-
-# Pytest
 .pytest_cache/
 
-# Build artifacts
+# =======================================
+# Packaging and builds
+# =======================================
 build/
 develop-eggs/
 dist/
@@ -75,27 +84,31 @@ lib64/
 parts/
 sdist/
 var/
-
-# Wheel
 *.egg-info/
 .installed.cfg
 *.egg
 
-# Celery
+# =======================================
+# Task queues / workers
+# =======================================
 celerybeat-schedule
 celerybeat.pid
 
-# Sphinx documentation
+# =======================================
+# Sphinx
+# =======================================
 docs/_build/
 
-# Node modules (if you use frontend tools)
+# =======================================
+# Frontend tools
+# =======================================
 node_modules/
 
-# Local settings
+# =======================================
+# Local settings / Secrets
+# =======================================
 settings_local.py
 local_settings.py
-
-# Secrets or custom configuration files
 secrets.json
 *.pem
 *.key
