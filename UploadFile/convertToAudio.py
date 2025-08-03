@@ -6,11 +6,10 @@ import os
 from django.conf import settings
 
 sample_rate = 44100
-step_duration = 0.3  # seconds per column
+step_duration = 0.32  # seconds per column
 
-# Musical notes from C3 to B5
+# Musical notes from C4 to B5
 note_scale = [
-    130.81, 146.83, 164.81, 174.61, 196.00, 220.00, 246.94,  # C3 to B3
     261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88,  # C4 to B4
     523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 987.77   # C5 to B5
 ]
@@ -18,6 +17,8 @@ note_scale = [
 def generate_tone(freq, duration, volume=1.0):
     t = np.linspace(0, duration, int(sample_rate * duration), False)
     tone = np.sin(2 * np.pi * freq * t) * volume
+    tone += 0.5 * np.sin(2 * np.pi * freq * 2 * t) * volume  # 2nd harmonic
+    tone += 0.3 * np.sin(2 * np.pi * freq * 3 * t) * volume  # 3rd harmonic
 
     # Envelope for smooth in/out
     fade_len = int(0.01 * sample_rate)

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block head%}
+{% block head %}
 <!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
@@ -10,28 +10,68 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        min-height: calc(100vh - 170px);
     }
+
     .description {
         color: white;
         margin-top: 15px;
         text-align: center;
         padding-inline: 20px;
         font-size: 1em;
-        padding-inline: 20px;
         background-color: rgb(55, 55, 55);
-        margin-block:20px ;
-    }
-    .container img {
-        max-width: 50%;
-        border: 2px solid white;
-        margin-top: 20px;
+        margin-block: 20px;
     }
     
-    .container span{
+    .image-wrapper {
+        position: relative;
+        display: inline-block;
+        width: 70%;
+        margin-top: 20px;
+        border: 2px solid #fff;
+        overflow: hidden;
+    }
+
+    @media (min-width: 670px) {
+        .image-wrapper {
+            width: 40%;
+        }
+    } 
+    @media (min-width: 870px) {
+        .image-wrapper {
+            width: 30%;
+        }
+    } 
+
+    .image-wrapper img {
+        width: 100%;
+        display: block;
+    }
+
+    .scanner-line {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 2px;
+    background-color: #00ff00;
+    box-shadow: 0 0 8px 2px #00ff00;
+    pointer-events: none;
+}
+
+    .sound {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .container span {
         color: white;
         font-size: 2em;
         padding-right: 10px;
     }
+
     .backBtn {
         text-decoration: none;
         color: black;
@@ -40,15 +80,13 @@
         margin-top: 30px;
         font-weight: bold;
         border-radius: 10px;
-        font-weight: bold;
+        transition-duration: 0.1s;
     }
-    .sound{
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        padding: 10px;
+
+    .backBtn:hover {
+        box-shadow: 0 0 10px greenyellow;
     }
-    
+
     #map {
         height: 300px;
         width: 80%;
@@ -57,51 +95,88 @@
         border-radius: 10px;
         border: 2px solid white;
     }
-    </style>
-    {% endblock head%}
+
     
-    {% block body %}
-    <div class="container">
+
+</style>
+{% endblock head %}
+
+{% block body %}
+<div class="container">
+    <div class="image-wrapper">
         <img src="{{ item.original_image.url }}" alt="Image">
-        
-        <div class="description">
-            <p>{{ item.description }}</p>
-        </div>
-        
-        {% if item.generated_audio %}
-        <div class="sound">
-            <span>Hear the sound </span>
-            <audio controls>
-                <source src="{{ item.generated_audio.url }}" type="audio/wav">
-                Your browser does not support the audio element.
-            </audio>
-        </div>
-        {% endif %}
-        
-        {% if item.latitude and item.longitude %}
-        <div id="map"></div>
-        {% endif %}
-        
-        <a href="{% url 'gallery' %}" class="backBtn">← Back to Gallery</a>
+        <div class="scanner-line" id="scannerLine"></div>
     </div>
-    
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    
+
+    <div class="description">
+        <p>{{ item.description }}</p>
+    </div>
+
+    {% if item.generated_audio %}
+    <div class="sound">
+        <span>Hear the sound</span>
+        <audio controls id="audioPlayer">
+            <source src="{{ item.generated_audio.url }}" type="audio/wav">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+    {% endif %}
+
     {% if item.latitude and item.longitude %}
-    <script>
-        const map = L.map('map').setView([{{ item.latitude }}, {{ item.longitude }}], 13);
-        
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
-        
-        L.marker([{{ item.latitude }}, {{ item.longitude }}])
+    <div id="map"></div>
+    {% endif %}
+
+    <a href="{% url 'gallery' %}" class="backBtn">← Back to Gallery</a>
+</div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+{% if item.latitude and item.longitude %}
+<script>
+    const map = L.map('map').setView([{{ item.latitude }}, {{ item.longitude }}], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    L.marker([{{ item.latitude }}, {{ item.longitude }}])
         .addTo(map)
         .bindPopup("📍 Image Location")
         .openPopup();
-        </script>
-    {% endif %}
-    
-{% endblock body %}
+</script>
+{% endif %}
 
+<!-- Scanning Line Sync with Audio -->
+<script>
+    const audio = document.getElementById('audioPlayer');
+    const scannerLine = document.getElementById('scannerLine');
+    const imageWrapper = document.querySelector('.image-wrapper');
+
+    function updateScanner() {
+        if (!audio.paused && !audio.ended) {
+            const duration = audio.duration-0.3 || 1;
+            const currentTime = audio.currentTime;
+            const percent = currentTime / duration;
+            const wrapperWidth = imageWrapper.offsetWidth;
+            scannerLine.style.left = (percent * wrapperWidth) + 'px';
+            requestAnimationFrame(updateScanner);
+        }
+    }
+
+    audio.addEventListener('play', () => {
+        requestAnimationFrame(updateScanner);
+    });
+
+    audio.addEventListener('seeked', () => {
+        const duration = audio.duration || 1;
+        const currentTime = audio.currentTime;
+        const wrapperWidth = imageWrapper.offsetWidth;
+        scannerLine.style.left = (currentTime / duration * wrapperWidth) + 'px';
+    });
+
+    audio.addEventListener('ended', () => {
+        scannerLine.style.left = '100%';
+    });
+</script>
+{% endblock body %}

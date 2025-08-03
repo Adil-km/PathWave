@@ -2,16 +2,20 @@
 
 {% block head%}
 <style> 
-.container{
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 170px);
 }
-.container h1{
+.container .hero-text{
+  font-size: 2em;
+  font-weight: 900;
+  max-width: 100%;
   color: white;
+  padding-inline: 20px;
+  text-align: center;
 }
 .container a{
   text-decoration: none;
@@ -25,13 +29,17 @@
   margin-top: 20px;
 }
 
+.container a:hover{
+  box-shadow: 0 0 10px greenyellow;
+}
+
 </style>
 {% endblock head%}
 
 {% block body %}
 
   <div class="container">
-    <h1>Got a pic of a pathole? Let it sing its soul!</h1>
+    <span class="hero-text">Got a pic of a pathole? Let it sing its soul!</span>
     <a href="{% url 'upload' %}">Upload</a>
   </div>
 

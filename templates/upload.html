@@ -1,99 +1,189 @@
 {% extends 'base.html' %}
 
-{% block head%}
+{% block head %}
 <!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
 <style>
-  .content {
-    max-width: 700px;
-    margin: 40px auto;
-    padding: 20px;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: stretch;
-  }
-  
-  .content h1 {
-    color: #d6ff00;
-    font-size: 2.2em;
-    text-align: center;
-    padding-bottom: 10px;
-  }
-  
-  .form-section label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-  }
-  
-  .form-section textarea,
-  .form-section input[type="file"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    background-color: #333;
-    color: white;
-    border: 1px solid #555;
-    border-radius: 5px;
-    font-size: 16px;
-  }
-  
-  .form-section button {
-    padding: 10px 20px;
-    width: 100%;
-    background-color: #d6ff00;
-    color: #111;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-size: 1.3em;
-    }
+.content {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 20px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-height: calc(100vh - 170px);
+}
 
-    .form-section button:focus{
-      outline-color: #111;
-    }
-    
-    .form-section button:hover {
-      background-color: #b3d400;
-    }
-    
-    #map {
-      height: 300px;
-      margin-top: 20px;
-      border: 2px solid #555;
-      border-radius: 10px;
-    }
-    </style>
+.content h1 {
+  color: #d6ff00;
+  font-size: 2.2em;
+  text-align: center;
+  padding-bottom: 10px;
+}
 
+.form-section label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
 
-{% endblock head%}
+.form-section textarea,
+.form-section input[type="file"] {
+  width: 98%;
+  padding-block: 10px;
+  margin-bottom: 20px;
+  background-color: #333;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.form-section button {
+  padding: 10px 20px;
+  width: 100%;
+  background-color: #d6ff00;
+  color: #111;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1.3em;
+}
+
+.form-section button:focus {
+  outline-color: #111;
+}
+
+.form-section button:hover {
+  background-color: #b3d400;
+}
+
+#map {
+  height: 300px;
+  margin-top: 20px;
+  border: 2px solid #555;
+  border-radius: 10px;
+}
+
+.preview-wrapper {
+  position: relative;
+  max-width: 300px;
+  margin: 30px auto 10px;
+}
+
+.preview-image {
+  width: 100%;
+  border-radius: 10px;
+  display: none;
+}
+
+.overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: none;
+  border-radius: 10px;
+  overflow: hidden;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.scan-effect {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    repeating-linear-gradient(to bottom, rgba(0, 255, 180, 0.1) 0px, rgba(0, 255, 180, 0.1) 2px, transparent 2px, transparent 6px),
+    linear-gradient(to bottom, rgba(0,255,240,0.1), rgba(0,255,255,0.5), rgba(0,255,240,0.1));
+  animation: scan 2.5s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
+  pointer-events: none;
+  z-index: 10;
+  mix-blend-mode: screen;
+  box-shadow: 0 0 30px rgba(0,255,255,0.3), 0 0 60px rgba(0,255,255,0.2);
+  backdrop-filter: blur(0.8px);
+  opacity: 0.85;
+  will-change: transform, top, opacity;
+  transition: opacity 0.3s ease;
+}
+
+.scan-effect::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(0, 255, 255, 0.8);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.6), 0 0 20px rgba(0, 255, 255, 0.3);
+  animation: pulse 2.5s infinite ease-in-out;
+  will-change: transform, opacity;
+}
+@keyframes scan {
+  0% {
+    top: -100%;
+  }
+  100% {
+    top: 100%;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scaleY(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleY(1.4);
+  }
+}
+
+.image {
+  transition: filter 0.3s ease;
+}
+
+/* When scanning is active, e.g. via a parent class like `.loading` */
+.loading{
+  filter: brightness(0.7) contrast(1.05);
+}
+  </style>
+{% endblock head %}
 
 {% block body %}
 <div class="form-section">
   <div class="content">
     <h1>Upload Your Image</h1>
     
-    <form method="post" enctype="multipart/form-data">
+    <form id="myForm" method="post" enctype="multipart/form-data">
       {% csrf_token %}
-      <input type="file" name="image" accept="image/*" required>
+      <input type="file" name="image" id="imageInput" accept="image/*" required>
       
       <label for="description">Enter Description:</label>
       <textarea id="description" name="description" rows="5" placeholder="Write something here..." required></textarea>
       
-      <!-- Hidden fields for lat/lng -->
+      <div class="preview-wrapper">
+        <img id="preview" class="preview-image" src="" alt="Preview">
+        <div class="overlay" id="aiOverlay">
+          <div class="scan-effect"></div>
+        </div>
+      </div>
+      
       <input type="hidden" id="id_latitude" name="latitude">
       <input type="hidden" id="id_longitude" name="longitude">
-      <label for="mao">Mark the location:</label>
+      
+      <label for="map">Mark the location:</label>
       <div id="map"></div>
       
       <br>
-      <button type="submit">CONVERT</button>
+      <button id="submit" type="submit">CONVERT</button>
     </form>
+
   </div>
 </div>
 
@@ -103,15 +193,17 @@
 <script>
   const latInput = document.getElementById('id_latitude');
   const lonInput = document.getElementById('id_longitude');
-  
+  const imageInput = document.getElementById('imageInput');
+  const preview = document.getElementById('preview');
+  const overlay = document.getElementById('aiOverlay');
+  const successMsg = document.getElementById('successMsg');
+
   const map = L.map('map').setView([20, 80], 4); // default to India
-  
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
   }).addTo(map);
-  
+
   let marker;
-  
   map.on('click', function (e) {
     const { lat, lng } = e.latlng;
     if (marker) marker.setLatLng([lat, lng]);
@@ -119,14 +211,56 @@
     latInput.value = lat;
     lonInput.value = lng;
   });
-  
-  // Optional: Get user's current location
+
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(pos => {
       const { latitude, longitude } = pos.coords;
       map.setView([latitude, longitude], 13);
     });
   }
-  </script>
-  
+
+  // Show preview when user selects an image
+  imageInput.addEventListener('change', function () {
+    const file = this.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+      overlay.style.display = 'none';
+      successMsg.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Prevent duplicate form submissions and show AI animation
+  const form = document.getElementById('myForm');
+  const submitBtn = document.getElementById('submit');
+
+  form.addEventListener('submit', function(e) {
+    // Show scanning effect
+    overlay.style.display = 'block';
+    successMsg.style.display = 'none';
+
+    // Disable the submit button temporarily
+    submitBtn.disabled = true;
+    submitBtn.innerText = 'CONVERTING...';
+
+    overlay.classList.add('loading');
+    // Remove class after 3 seconds to simulate scan ending
+    setTimeout(() => {
+      overlay.classList.remove('loading');
+    }, 10000);
+
+    // Simulate AI processing
+    setTimeout(() => {
+      overlay.style.display = 'none';
+      successMsg.style.display = 'block';
+      submitBtn.disabled = false;
+      submitBtn.innerText = 'CONVERT';
+    }, 10000); // match with scan animation
+
+  });
+</script>
 {% endblock body %}

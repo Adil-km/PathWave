@@ -9,17 +9,18 @@
   padding: 18px 50px;
   background-color: #111;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+  text-align: center;
 }
 
 .logo {
   font-size: 26px;
   font-weight: bold;
-  letter-spacing: 2px;
   animation: logoAnimation 1s ease-in-out infinite;
 }
 .logo a{
   color: #ffffff;
   text-decoration: none;
+  text-wrap-mode: nowrap;
 }
 .logo a:hover{
   color: greenyellow;
@@ -90,16 +91,18 @@
       .navbar {
         display: flex;
         flex-direction: column;
+        overflow: hidden;
       }
       .nav-links{
         display: flex;
         justify-content: center;
         flex-wrap: wrap;
+        margin-top: 10px;
       }
     }
     
     
-    @media only screen and (max-width: 420px) {
+    @media only screen and (max-width: 445px) {
       .navbar-logo,
       .nav-links{
         display: flex;
