@@ -113,7 +113,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
 # MEDIA FILES (Uploads)
 # ---------------------
 if os.getenv('RENDER') == 'True':
-    MEDIA_ROOT = '/media/'
+    MEDIA_ROOT = '/tmp/media/' 
 else:
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
