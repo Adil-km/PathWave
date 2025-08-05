@@ -96,7 +96,7 @@ def UploadImage(request):
             description=desc if desc else ""
         )
 
-        return redirect(reverse("upload") + f"?id={obj.id}")
+        return redirect(reverse("image_detail", args=[obj.id]))
 
     # GET: show upload form + preview latest
     context = {}
