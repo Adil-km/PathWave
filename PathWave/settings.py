@@ -13,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-7+bc59s_&p8ij5@2o6($tkn)lo2=ck5!wen0t)ak+bh8!xj#xp'
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1',"https://demo-project-landing-page.vercel.app"]
 if os.getenv('RENDER') == 'True':
     ALLOWED_HOSTS += ['pathwave.onrender.com']
 
@@ -28,12 +28,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'UploadFile',
+    'corsheaders',
 ]
 
 # ---------------------
 # MIDDLEWARE
 # ---------------------
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
