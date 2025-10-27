@@ -72,8 +72,8 @@ WSGI_APPLICATION = 'PathWave.wsgi.application'
 # ---------------------
 # DATABASES
 # ---------------------
-if os.getenv('RENDER') == 'True':
-    print("#### connected to Render..............")
+if os.getenv('PROD') == 'True':
+    print("#### connected to Neon DB..............")
     DATABASES = {
         'default': dj_database_url.config(default=os.getenv("DATABASE_URL"), conn_max_age=600)
     }
