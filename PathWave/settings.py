@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-7+bc59s_&p8ij5@2o6($tkn)lo2=ck5!wen0t)ak+bh8!xj#xp
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1',"https://demo-project-landing-page.vercel.app"]
-if os.getenv('RENDER') == 'True':
+if os.getenv('PROD') == 'True':
     ALLOWED_HOSTS += ['pathwave.onrender.com']
 
 # ---------------------
@@ -115,7 +115,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
 # ---------------------
 # MEDIA FILES (Uploads)
 # ---------------------
-if os.getenv('RENDER') == 'True':
+if os.getenv('PROD') == 'True':
     MEDIA_ROOT = '/tmp/media/' 
 else:
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
