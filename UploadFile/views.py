@@ -10,6 +10,7 @@ from django.urls import reverse
 from .models import Upload
 from .convertToAudio import image_to_music
 
+from .tasks import delete_upload_data
 
 def home(request):
     return render(request, 'home.html')
@@ -95,6 +96,8 @@ def UploadImage(request):
             longitude=lon if lon else None,
             description=desc if desc else ""
         )
+
+        delete_upload_data(obj.id, schedule=480)
 
         return redirect(reverse("image_detail", args=[obj.id]))
 
