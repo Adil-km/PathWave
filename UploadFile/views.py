@@ -1,6 +1,7 @@
 import os
 import uuid
 import cv2
+from django.http import HttpResponse
 import numpy as np
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.files.base import ContentFile
@@ -135,3 +136,15 @@ def viewGallery(request):
         context["items"] = Upload.objects.all()
 
     return render(request, 'gallery.html', context)
+
+def serve_ping_js(request):
+    """
+    Serve ping.js from assets folder with correct MIME type.
+    """
+    file_path = os.path.join(settings.BASE_DIR, "static", 'ping.js')
+    print(file_path)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as f:
+            return HttpResponse(f.read(), content_type='application/javascript')
+    else:
+        return HttpResponse("Not Found "+file_path, status=404)
