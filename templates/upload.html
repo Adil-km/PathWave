@@ -178,7 +178,7 @@
       <input type="hidden" id="id_latitude" name="latitude">
       <input type="hidden" id="id_longitude" name="longitude">
       
-      <span">Mark the location:</span>
+      <span>Mark the location:</span>
       <div id="map"></div>
       
       <br>
@@ -200,8 +200,10 @@
   const successMsg = document.getElementById('successMsg');
 
   const map = L.map('map').setView([20, 80], 4); // default to India
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors'
+  L.tileLayer('https://{s}://{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors &copy; <a href="https://carto.com">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 20
   }).addTo(map);
 
   let marker;
