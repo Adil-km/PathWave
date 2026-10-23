@@ -15,6 +15,7 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['localhost', 
                  '127.0.0.1',
+                 "pathwave.madebyadil.dev",
                  "https://demo-project-landing-page.vercel.app",]
 
 CORS_ALLOWED_ORIGINS = [
