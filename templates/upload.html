@@ -1,269 +1,494 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  crossorigin=""
+/>
 
 <style>
-.content {
-  max-width: 700px;
-  margin: 40px auto;
-  padding: 20px;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  min-height: calc(100vh - 170px);
-}
+  .content {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 20px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-height: calc(100vh - 170px);
+    box-sizing: border-box;
+  }
 
-.content h1 {
-  color: #d6ff00;
-  font-size: 2.2em;
-  text-align: center;
-  padding-bottom: 10px;
-}
+  .content h1 {
+    color: #d6ff00;
+    font-size: 2.2em;
+    text-align: center;
+    padding-bottom: 10px;
+  }
 
-.form-section label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-}
+  .form-section label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
 
-.form-section textarea,
-.form-section input[type="file"] {
-  width: 98%;
-  padding-block: 10px;
-  padding-left: 10px;
-  margin-bottom: 20px;
-  background-color: #333;
-  color: white;
-  border: 1px solid #555;
-  border-radius: 5px;
-  font-size: 16px;
-}
+  .form-section textarea,
+  .form-section input[type="file"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    margin-bottom: 20px;
+    background-color: #333;
+    color: white;
+    border: 1px solid #555;
+    border-radius: 5px;
+    font-size: 16px;
+  }
 
-.form-section button {
-  padding: 10px 20px;
-  width: 100%;
-  background-color: #d6ff00;
-  color: #111;
-  font-weight: bold;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-size: 1.3em;
-}
+  .form-section button {
+    padding: 10px 20px;
+    width: 100%;
+    background-color: #d6ff00;
+    color: #111;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1.3em;
+  }
 
-.form-section button:focus {
-  outline-color: #111;
-}
+  .form-section button:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 3px;
+  }
 
-.form-section button:hover {
-  background-color: #b3d400;
-}
+  .form-section button:hover:not(:disabled) {
+    background-color: #b3d400;
+  }
 
-#map {
-  height: 300px;
-  margin-top: 20px;
-  border: 2px solid #555;
-  border-radius: 10px;
-}
+  .form-section button:disabled {
+    cursor: wait;
+    opacity: 0.7;
+  }
 
-.preview-wrapper {
-  position: relative;
-  max-width: 300px;
-  margin: 30px auto 10px;
-}
+  .location-label {
+    display: block;
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
 
-.preview-image {
-  width: 100%;
-  border-radius: 10px;
-  display: none;
-}
+  #map {
+    height: 300px;
+    margin-top: 20px;
+    border: 2px solid #555;
+    border-radius: 10px;
+  }
 
-.overlay {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  display: none;
-  border-radius: 10px;
-  overflow: hidden;
-  z-index: 2;
-  pointer-events: none;
-}
+  .map-help {
+    margin-top: 8px;
+    color: #ccc;
+    font-size: 0.9rem;
+  }
 
-.scan-effect {
-  position: absolute;
-  top: -100%;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image:
-    repeating-linear-gradient(to bottom, rgba(0, 255, 180, 0.1) 0px, rgba(0, 255, 180, 0.1) 2px, transparent 2px, transparent 6px),
-    linear-gradient(to bottom, rgba(0,255,240,0.1), rgba(0,255,255,0.5), rgba(0,255,240,0.1));
-  animation: scan 2.5s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
-  pointer-events: none;
-  z-index: 10;
-  mix-blend-mode: screen;
-  box-shadow: 0 0 30px rgba(0,255,255,0.3), 0 0 60px rgba(0,255,255,0.2);
-  backdrop-filter: blur(0.8px);
-  opacity: 0.85;
-  will-change: transform, top, opacity;
-  transition: opacity 0.3s ease;
-}
+  #mapStatus {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: #d6ff00;
+  }
 
-.scan-effect::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: rgba(0, 255, 255, 0.8);
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.6), 0 0 20px rgba(0, 255, 255, 0.3);
-  animation: pulse 2.5s infinite ease-in-out;
-  will-change: transform, opacity;
-}
-@keyframes scan {
-  0% {
+  .preview-wrapper {
+    position: relative;
+    max-width: 300px;
+    width: 100%;
+    margin: 30px auto 10px;
+  }
+
+  .preview-image {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    display: none;
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    display: none;
+    border-radius: 10px;
+    overflow: hidden;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .scan-effect {
+    position: absolute;
     top: -100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+      repeating-linear-gradient(
+        to bottom,
+        rgba(0, 255, 180, 0.1) 0px,
+        rgba(0, 255, 180, 0.1) 2px,
+        transparent 2px,
+        transparent 6px
+      ),
+      linear-gradient(
+        to bottom,
+        rgba(0, 255, 240, 0.1),
+        rgba(0, 255, 255, 0.5),
+        rgba(0, 255, 240, 0.1)
+      );
+    animation: scan 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    pointer-events: none;
+    z-index: 10;
+    mix-blend-mode: screen;
+    box-shadow:
+      0 0 30px rgba(0, 255, 255, 0.3),
+      0 0 60px rgba(0, 255, 255, 0.2);
+    opacity: 0.85;
+    will-change: top;
   }
-  100% {
-    top: 100%;
-  }
-}
 
-@keyframes pulse {
-  0%, 100% {
-    opacity: 0.6;
-    transform: scaleY(1);
+  .scan-effect::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(0, 255, 255, 0.8);
+    box-shadow:
+      0 0 10px rgba(0, 255, 255, 0.6),
+      0 0 20px rgba(0, 255, 255, 0.3);
+    animation: pulse 2.5s infinite ease-in-out;
   }
-  50% {
-    opacity: 1;
-    transform: scaleY(1.4);
+
+  @keyframes scan {
+    0% {
+      top: -100%;
+    }
+    100% {
+      top: 100%;
+    }
   }
-}
 
-.image {
-  transition: filter 0.3s ease;
-}
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 0.6;
+      transform: scaleY(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scaleY(1.4);
+    }
+  }
 
-/* When scanning is active, e.g. via a parent class like `.loading` */
-.loading{
-  filter: brightness(0.7) contrast(1.05);
-}
-  </style>
+  .loading {
+    filter: brightness(0.7) contrast(1.05);
+  }
+
+  @media (max-width: 600px) {
+    .content {
+      margin: 20px auto;
+      padding: 15px;
+    }
+
+    .content h1 {
+      font-size: 1.8em;
+    }
+
+    #map {
+      height: 300px;
+    }
+  }
+</style>
 {% endblock head %}
+
 
 {% block body %}
 <div class="form-section">
   <div class="content">
     <h1>Upload Your Image</h1>
-    
-    <form id="myForm" method="post" enctype="multipart/form-data">
+
+    <form
+      id="myForm"
+      method="post"
+      enctype="multipart/form-data"
+    >
       {% csrf_token %}
-      <input type="file" name="image" id="imageInput" accept="image/*" required>
-      
+
+      <label for="imageInput">Select an image:</label>
+      <input
+        type="file"
+        name="image"
+        id="imageInput"
+        accept="image/*"
+        required
+      >
+
       <label for="description">Enter Description:</label>
-      <textarea id="description" name="description" rows="5" placeholder="Write something here..." required></textarea>
-      
+      <textarea
+        id="description"
+        name="description"
+        rows="5"
+        placeholder="Write something here..."
+        required
+      ></textarea>
+
       <div class="preview-wrapper">
-        <img id="preview" class="preview-image" src="" alt="Preview">
-        <div class="overlay" id="aiOverlay">
+        <img
+          id="preview"
+          class="preview-image"
+          alt="Selected image preview"
+        >
+
+        <div class="overlay" id="aiOverlay" aria-hidden="true">
           <div class="scan-effect"></div>
         </div>
       </div>
-      
-      <input type="hidden" id="id_latitude" name="latitude">
-      <input type="hidden" id="id_longitude" name="longitude">
-      
-      <span>Mark the location:</span>
-      <div id="map"></div>
-      
-      <br>
-      <button id="submit" type="submit">CONVERT</button>
-    </form>
 
+      <input
+        type="hidden"
+        id="id_latitude"
+        name="latitude"
+      >
+
+      <input
+        type="hidden"
+        id="id_longitude"
+        name="longitude"
+      >
+
+      <label class="location-label" for="map">
+        Mark the location:
+      </label>
+
+      <div id="map" aria-label="Interactive location map"></div>
+
+      <p class="map-help">
+        Click on the map to select a location. Your selected coordinates
+        will be submitted with the form.
+      </p>
+
+      <p id="mapStatus" role="status" aria-live="polite">
+        Loading map...
+      </p>
+
+      <p id="successMsg" role="status" aria-live="polite"
+         style="display: none;">
+        Your form is being submitted.
+      </p>
+
+      <br>
+
+      <button id="submit" type="submit">
+        CONVERT
+      </button>
+    </form>
   </div>
 </div>
 
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  crossorigin=""
+></script>
 
 <script>
-  const latInput = document.getElementById('id_latitude');
-  const lonInput = document.getElementById('id_longitude');
-  const imageInput = document.getElementById('imageInput');
-  const preview = document.getElementById('preview');
-  const overlay = document.getElementById('aiOverlay');
-  const successMsg = document.getElementById('successMsg');
+(function () {
+  "use strict";
 
-  const map = L.map('map').setView([20, 80], 4); // default to India
-  L.tileLayer('https://{s}://{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors &copy; <a href="https://carto.com">CARTO</a>',
-      subdomains: 'abcd',
-      maxZoom: 20
-  }).addTo(map);
+  function initializePage() {
+    const mapElement = document.getElementById("map");
+    const latInput = document.getElementById("id_latitude");
+    const lonInput = document.getElementById("id_longitude");
+    const imageInput = document.getElementById("imageInput");
+    const preview = document.getElementById("preview");
+    const overlay = document.getElementById("aiOverlay");
+    const successMsg = document.getElementById("successMsg");
+    const mapStatus = document.getElementById("mapStatus");
+    const form = document.getElementById("myForm");
+    const submitBtn = document.getElementById("submit");
 
-  let marker;
-  map.on('click', function (e) {
-    const { lat, lng } = e.latlng;
-    if (marker) marker.setLatLng([lat, lng]);
-    else marker = L.marker([lat, lng]).addTo(map);
-    latInput.value = lat;
-    lonInput.value = lng;
-  });
+    if (
+      !mapElement ||
+      !latInput ||
+      !lonInput ||
+      !imageInput ||
+      !form ||
+      !submitBtn
+    ) {
+      console.error("Map page initialization failed: required HTML element missing.");
+      return;
+    }
 
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(pos => {
-      const { latitude, longitude } = pos.coords;
-      map.setView([latitude, longitude], 13);
+    if (mapElement.dataset.initialized === "true") {
+      return;
+    }
+
+    // A failed Leaflet CDN request should produce a useful message.
+    if (typeof L === "undefined") {
+      mapStatus.textContent =
+        "The map library could not load. Please refresh the page or check your connection.";
+      console.error("Leaflet is unavailable. Check the Leaflet CDN request.");
+      return;
+    }
+
+    mapElement.dataset.initialized = "true";
+
+    let map;
+
+    try {
+      map = L.map(mapElement).setView([20, 80], 4); // Default view: India.
+
+      L.tileLayer(
+        "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+        {
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+          subdomains: "abcd",
+          maxZoom: 20,
+          detectRetina: true
+        }
+      )
+      .on("tileerror", function () {
+        mapStatus.textContent =
+          "Some map tiles could not load. Check your connection or browser console.";
+      })
+      .addTo(map);
+
+      mapStatus.textContent =
+        "Click on the map to select a location.";
+
+      requestAnimationFrame(function () {
+        map.invalidateSize();
+      });
+
+    } catch (error) {
+      mapElement.dataset.initialized = "false";
+      mapStatus.textContent =
+        "Unable to initialize the map. Please refresh the page.";
+      console.error("Leaflet initialization error:", error);
+      return;
+    }
+
+    let marker = null;
+
+    map.on("click", function (event) {
+      const latitude = event.latlng.lat;
+      const longitude = event.latlng.lng;
+
+      if (marker) {
+        marker.setLatLng(event.latlng);
+      } else {
+        marker = L.marker(event.latlng).addTo(map);
+      }
+
+      latInput.value = latitude.toFixed(6);
+      lonInput.value = longitude.toFixed(6);
+
+      mapStatus.textContent =
+        "Selected location: " +
+        latitude.toFixed(6) +
+        ", " +
+        longitude.toFixed(6);
+    });
+
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+
+          map.setView([latitude, longitude], 13);
+          mapStatus.textContent =
+            "Your area is shown. Click the map to select a location.";
+        },
+        function () {
+          mapStatus.textContent =
+            "Click on the map to select a location.";
+        },
+        {
+          enableHighAccuracy: false,
+          timeout: 8000,
+          maximumAge: 300000
+        }
+      );
+    }
+
+    imageInput.addEventListener("change", function () {
+      const file = imageInput.files && imageInput.files[0];
+
+      if (!file) {
+        preview.removeAttribute("src");
+        preview.style.display = "none";
+        return;
+      }
+
+      if (!file.type.startsWith("image/")) {
+        imageInput.value = "";
+        preview.removeAttribute("src");
+        preview.style.display = "none";
+        alert("Please select a valid image file.");
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.onload = function (event) {
+        preview.src = event.target.result;
+        preview.style.display = "block";
+
+        if (overlay) {
+          overlay.style.display = "none";
+          overlay.classList.remove("loading");
+        }
+
+        if (successMsg) {
+          successMsg.style.display = "none";
+        }
+      };
+
+      reader.onerror = function () {
+        alert("Unable to preview this image. Please try another file.");
+      };
+
+      reader.readAsDataURL(file);
+    });
+
+    form.addEventListener("submit", function () {
+      if (submitBtn.disabled) {
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "CONVERTING...";
+
+      if (overlay && preview.style.display === "block") {
+        overlay.style.display = "block";
+        overlay.classList.add("loading");
+      }
+
+      if (successMsg) {
+        successMsg.textContent = "Submitting your form...";
+        successMsg.style.display = "block";
+      }
+    });
+
+    window.addEventListener("resize", function () {
+      map.invalidateSize();
     });
   }
 
-  // Show preview when user selects an image
-  imageInput.addEventListener('change', function () {
-    const file = this.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      preview.src = e.target.result;
-      preview.style.display = 'block';
-      overlay.style.display = 'none';
-      successMsg.style.display = 'none';
-    };
-    reader.readAsDataURL(file);
-  });
-
-  // Prevent duplicate form submissions and show AI animation
-  const form = document.getElementById('myForm');
-  const submitBtn = document.getElementById('submit');
-
-  form.addEventListener('submit', function(e) {
-    // Show scanning effect
-    overlay.style.display = 'block';
-    successMsg.style.display = 'none';
-
-    // Disable the submit button temporarily
-    submitBtn.disabled = true;
-    submitBtn.innerText = 'CONVERTING...';
-
-    overlay.classList.add('loading');
-    // Remove class after 3 seconds to simulate scan ending
-    setTimeout(() => {
-      overlay.classList.remove('loading');
-    }, 10000);
-
-    // Simulate AI processing
-    setTimeout(() => {
-      overlay.style.display = 'none';
-      successMsg.style.display = 'block';
-      submitBtn.disabled = false;
-      submitBtn.innerText = 'CONVERT';
-    }, 10000); // match with scan animation
-
-  });
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initializePage);
+  } else {
+    initializePage();
+  }
+})();
 </script>
 {% endblock body %}
