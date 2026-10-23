@@ -209,7 +209,6 @@
 </style>
 {% endblock head %}
 
-
 {% block body %}
 <div class="form-section">
   <div class="content">
@@ -330,7 +329,6 @@
       return;
     }
 
-    // A failed Leaflet CDN request should produce a useful message.
     if (typeof L === "undefined") {
       mapStatus.textContent =
         "The map library could not load. Please refresh the page or check your connection.";
@@ -343,16 +341,14 @@
     let map;
 
     try {
-      map = L.map(mapElement).setView([20, 80], 4); // Default view: India.
+      map = L.map(mapElement).setView([20, 80], 4);
 
       L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+        "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
         {
           attribution:
-            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-          subdomains: "abcd",
-          maxZoom: 20,
-          detectRetina: true
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          maxZoom: 19
         }
       )
       .on("tileerror", function () {
