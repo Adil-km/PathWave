@@ -22,7 +22,8 @@ CORS_ALLOWED_ORIGINS = [
     "https://demo-project-landing-page.vercel.app",
     "https://my-portfolio-git-main-adil-kms-projects.vercel.app",
     "https://my-portfolio-awci1rvd7-adil-kms-projects.vercel.app",
-    "https://madebyadil.dev"]
+    "https://madebyadil.dev",
+    "https://pathwave.madebyadil.dev"]
 
 if os.getenv('PROD') == 'True':
     ALLOWED_HOSTS += ['pathwave.onrender.com']
